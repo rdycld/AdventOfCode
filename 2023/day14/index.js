@@ -18,10 +18,16 @@ function transpose(raw) {
   return join(tMat);
 }
 
-function rollWest(data) {
-  return data
-    .map((l) => l.split('#'))
-    .map((l) => l.map((ll) => ll.split('').sort().reverse().join('')).join('#'));
+function cycle(data) {
+  let cycled = data;
+  for (let i = 0; i < 4; ++i) {
+    cycled = transpose(cycled)
+      .map((l) => l.split('#'))
+      .map((l) => l.map((ll) => ll.split('').sort().reverse().join('')).join('#'))
+      .map((l) => l.split('').reverse().join(''));
+  }
+
+  return cycled;
 }
 
 function rollNorth(data) {
@@ -30,24 +36,6 @@ function rollNorth(data) {
       .map((l) => l.split('#'))
       .map((l) => l.map((ll) => ll.split('').sort().reverse().join('')).join('#')),
   );
-}
-
-function rollEast(data) {
-  return data
-    .map((l) => l.split('#'))
-    .map((l) => l.map((ll) => ll.split('').sort().join('')).join('#'));
-}
-
-function rollSouth(data) {
-  return transpose(
-    transpose(data)
-      .map((l) => l.split('#'))
-      .map((l) => l.map((ll) => ll.split('').sort().join('')).join('#')),
-  );
-}
-
-function cycle(data) {
-  return rollEast(rollSouth(rollWest(rollNorth(data))));
 }
 
 function sum(data) {
@@ -64,29 +52,35 @@ function sum(data) {
 
 const data = input.split('\n').filter(Boolean);
 
-const cache = {};
-const cacheArr = [data.join('\n')];
+function part1() {
+  const answ = sum(rollNorth(data));
 
-let iter = 0;
-let rolled = data;
+  console.log(answ);
+}
 
-while (true) {
-  const key = rolled.join('');
-  if (cache[key]) {
-    break;
+function part2() {
+  const cache = {};
+  const cacheArr = [data];
+
+  let iter = 0;
+  let rolled = data;
+
+  while (true) {
+    const key = rolled.join('\n');
+    if (cache[key]) {
+      break;
+    }
+    rolled = cycle(rolled);
+    cache[key] = rolled;
+    cacheArr.push(rolled.join('\n'));
+    iter += 1;
   }
-  rolled = cycle(rolled);
-  cache[key] = rolled;
-  cacheArr.push(rolled.join('\n'));
-  iter += 1;
+
+  const first = cacheArr.indexOf(rolled.join('\n'));
+  const idx = ((1_000_000_000 - iter) % (iter - first)) + first;
+  const answ = sum(cacheArr[idx].split('\n'));
+
+  console.log(answ);
 }
-
-let final = data;
-const first = cacheArr.indexOf(rolled.join('\n'));
-
-for (let i = 0; i < ((1_000_000_000 - first) % (first - iter)) + iter; ++i) {
-  final = cycle(final);
-}
-console.log(iter - first, first);
-
-console.log(sum(final));
+part1();
+part2();
