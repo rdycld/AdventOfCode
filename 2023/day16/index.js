@@ -38,20 +38,9 @@ function keyGen(path) {
   const [start, direction] = path;
   return `${start[0]}-${start[1]}-${direction}`;
 }
-function advance(pos, dir) {
-  const next = vec[dir];
-  return [pos[0] + next[1], pos[1] + next[0]];
-}
 
-function getPosition([y, x]) {
-  return data[y][x];
-}
-function checkBoundaries(position) {
-  const [y, x] = position;
-
-  if (y < 0 || y >= data.length || x < 0 || x >= data[0].length) return true;
-
-  return false;
+function checkBoundaries([y,x]) {
+  return y < 0 || y >= data.length || x < 0 || x >= data[0].length
 }
 
 const paths = [];
@@ -60,25 +49,26 @@ const energized = new Set();
 
 function resolvePath(path, starter = false) {
   const [start, direction] = path;
-  let position = start;
+  let pos = start;
   let resolved = false;
-  let val = getPosition(position);
+  let val = data[pos[0]][pos[1]];
   let overflow = false;
-  energized.add(`${position[0]}-${position[1]}`);
+  energized.add(`${pos[0]}-${pos[1]}`);
 
   if (starter && val !== '.') {
     resolved = true;
   }
 
   while (!resolved) {
-    position = advance(position, direction);
-    if (checkBoundaries(position)) {
+    const next = vec[direction]
+    pos = [pos[0] + next[1], pos[1] + next[0]]
+    if (checkBoundaries(pos)) {
       resolved = true;
       overflow = true;
       break;
     }
-    val = getPosition(position);
-    energized.add(`${position[0]}-${position[1]}`);
+    val = data[pos[0]][pos[1]];
+    energized.add(`${pos[0]}-${pos[1]}`);
 
     if (val === '.') continue;
     resolved = true;
@@ -93,7 +83,7 @@ function resolvePath(path, starter = false) {
   const next = collision[direction + val];
 
   for (let n of next) {
-    const p = [position, n];
+    const p = [pos, n];
     const pathKey = keyGen(p);
     if (cache[pathKey]) continue;
 
