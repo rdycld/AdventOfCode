@@ -67,8 +67,8 @@ function part2() {
     while (q.length) {
       let s = q.shift();
 
-      for (let x of [...supports[s]].filter((el) => !willFall.has(el)))
-        if ([...supportedBy[x]].every((el) => willFall.has(el))) {
+      for (let x of supports[s].difference(willFall).values())
+        if (supportedBy[x].isSubsetOf(willFall)) {
           q.push(x);
           willFall.add(x);
         }
