@@ -1,2 +1,8 @@
 **/*.txt
 **/*.DS_STORE
+
+**/*/target/**/*
+**/*/src/**/*
+
+*.toml
+*.lock
