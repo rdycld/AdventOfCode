@@ -15,7 +15,7 @@ impl Tree {
             }
         }
 
-        return None;
+        None
     }
 
     fn add_node(&mut self, node: Tree, path: &Vec<&str>) {
