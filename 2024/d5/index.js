@@ -1,25 +1,23 @@
 const fs = require("fs");
 
-const input = fs.readFileSync("./input.txt", "utf8");
+const i = fs.readFileSync("./input.txt", "utf8");
 
-const cache = new Map();
+const c = new Map();
 
-const [p1,p2] = input
+const [a, b] = i
   .split("\n\n")
-  .flatMap((l) => l.split("\n"))
-  .reduce((acc, val) => {
-    if (val.includes("|")) {
-      cache.set(val, -1);
-      cache.set(val.split("|").reverse().join("|"), 1);
-      return acc
-    }
+  .flatMap((a) => a.split("\n"))
+  .reduce(
+    (a, b) => {
+      if (b.includes("|")) c.set(b, -1);
+      else {
+        let d = b.split(",").toSorted((a, b) => c.get(a+'|'+b));
+        a[+(d+''!==b+'')]+=+d[d.length>>1]
+      }
 
-   const sorted = [...val.split(',')].sort((a,b)=>cache.get(`${a}|${b}`));
-   const middle = sorted[Math.floor(sorted.length/2)];
+      return a;
+    },
+    [0, 0]
+  );
 
-   acc[Number(sorted.toString() !== val.toString())]+=+middle
-
-   return acc
-  }, [0,0]);
-
-console.log('p1: ',p1,'p2: ',p2);
+console.log("p1: ", a, "p2: ", b);
