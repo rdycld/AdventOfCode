@@ -21,3 +21,15 @@ const [a, b] = i
   );
 
 console.log("p1: ", a, "p2: ", b);
+
+const xddd= i
+  .split("\n\n")
+  .flatMap((a) => a.split("\n"))
+  .reduce((acc,val,_,arr)=> val.includes('|') ? acc : (val.split(',').toSorted((a,b)=> arr.includes(a+'|'+b)?-1:1)+'' === val+'') ?
+    [acc[0]+ +val.split(',').toSorted((a,b)=> arr.includes(a+'|'+b)?-1:1)[val.split(',').length>>1] , acc[1]]
+  : 
+    [acc[0],acc[1]+ +val.split(',').toSorted((a,b)=> arr.includes(a+'|'+b)?-1:1)[val.split(',').length>>1]]
+  ,[0,0])
+
+
+  console.log(xddd)
