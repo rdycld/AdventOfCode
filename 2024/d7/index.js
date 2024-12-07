@@ -19,6 +19,7 @@ const data = input
   .split("\n")
   .map((l) => [+l.split(": ")[0], l.split(": ")[1].split(" ").map(Number)]);
 
+const operandsPart1 = [add, multiply];
 const operands = [add, multiply, concat];
 
 const valid = [];
