@@ -6,9 +6,8 @@ const data = input.split("").map(Number);
 
 const disc = [];
 
-for (let i = 0; i < data.length; ++i) {
+for (let i = 0; i < data.length; ++i) 
   disc.push([i % 2 === 0 ? i / 2 : ".", data[i], i]);
-}
 
 for (let i = disc.length - 1; i > 0; --i) {
   //   [id, size, idx]
@@ -22,7 +21,6 @@ for (let i = disc.length - 1; i > 0; --i) {
 
     if (file[1] <= space[1]) {
       disc.push([".", file[1], file[2]]);
-      
       file[2] = space[2];
       space[1] -= file[1];
 
@@ -30,11 +28,9 @@ for (let i = disc.length - 1; i > 0; --i) {
         let v = disc[k];
         if (k === i) continue;
 
-        if (v[2] >= file[2]) {
+        if (v[2] >= file[2]) 
           v[2] += 1;
-        }
       }
-
 
       break;
     }
@@ -52,5 +48,4 @@ const p2 = disc
   })
   .reduce((p, v, i) => (v === "." ? p : p + v * i));
 
-  console.log(p2)
-
+console.log(p2);
