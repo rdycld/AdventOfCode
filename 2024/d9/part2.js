@@ -4,9 +4,10 @@ const input = fs.readFileSync("./input.txt", { encoding: "utf8" });
 
 const data = input.split("").map(Number);
 
+console.time('part2')
 const disc = [];
 
-for (let i = 0; i < data.length; ++i) 
+for (let i = 0; i < data.length; ++i)
   disc.push([i % 2 === 0 ? i / 2 : ".", data[i], i]);
 
 for (let i = disc.length - 1; i > 0; --i) {
@@ -28,8 +29,7 @@ for (let i = disc.length - 1; i > 0; --i) {
         let v = disc[k];
         if (k === i) continue;
 
-        if (v[2] >= file[2]) 
-          v[2] += 1;
+        if (v[2] >= file[2]) v[2] += 1;
       }
 
       break;
@@ -46,6 +46,11 @@ const p2 = disc
     }
     return v;
   })
-  .reduce((p, v, i) => (v === "." ? p : p + v * i));
+  .reduce((p, v, i) => {
+    return (v === "." ? p : p + v * i);
+  });
 
-console.log(p2);
+  console.log(p2)
+  
+
+console.timeEnd('part2')
