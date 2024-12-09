@@ -21,7 +21,8 @@ for (let i = disc.length - 1; i > 0; --i) {
     if (space[0] !== ".") continue;
 
     if (file[1] <= space[1]) {
-      let _fIdx = file[2];
+      disc.push([".", file[1], file[2]]);
+      
       file[2] = space[2];
       space[1] -= file[1];
 
@@ -34,7 +35,6 @@ for (let i = disc.length - 1; i > 0; --i) {
         }
       }
 
-      disc.push([".", file[1], _fIdx + 1]);
 
       break;
     }
@@ -52,4 +52,5 @@ const p2 = disc
   })
   .reduce((p, v, i) => (v === "." ? p : p + v * i));
 
-console.log(p2);
+  console.log(p2)
+
