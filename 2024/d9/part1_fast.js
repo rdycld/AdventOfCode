@@ -32,9 +32,7 @@ main: while (true) {
   let v = disc[r];
   r--;
 
-  if (v === ".") {
-    continue;
-  }
+  if (v === ".")  continue ;
   sum += l * v;
   if (l === r)  break main; 
   l++;
