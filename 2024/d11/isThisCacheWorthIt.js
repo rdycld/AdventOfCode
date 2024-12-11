@@ -14,30 +14,24 @@ function split(value) {
   return [+asStr.substring(0, middle), +asStr.substring(middle)];
 }
 
-const cache = new Cache("-");
+const { withCache } = new Cache("-");
 
 function calc(value, depth) {
+  if (depth === 0) return withCache(1, value, depth);
 
-  if (depth === 0) 
-    return cache.withCache(1, value, depth);
+  let nextDepth = depth - 1;
 
-  let nextDepth = depth - 1
+  if (value === 0) return withCache(calc, 1, nextDepth);
 
-  if (value === 0) 
-    return cache.withCache(calc, 1, nextDepth);
-  
   let asStr = value.toString();
 
   if (asStr.length % 2 === 0) {
     const [left, right] = split(value);
 
-    return (
-      cache.withCache(calc, left, nextDepth) +
-      cache.withCache(calc, right, nextDepth)
-    );
+    return withCache(calc, left, nextDepth) + withCache(calc, right, nextDepth);
   }
 
-  return cache.withCache(calc, value *2024, nextDepth)
+  return withCache(calc, value * 2024, nextDepth);
 }
 
 let sum = 0;
@@ -49,4 +43,3 @@ for (let stone of data) {
 console.log(data, "depth: ", SOLVE_PART_2 ? 75 : 25);
 console.log(sum);
 console.timeEnd("day11");
-

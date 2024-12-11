@@ -10,7 +10,7 @@ export class Cache {
     return args.join(this.#delimiter);
   }
 
-  withCache(output, ...args) {
+  withCache = (output, ...args) => {
     let key = this.#keyGen(...args);
 
     if (this.cache[key]) return this.cache[key];
@@ -19,5 +19,5 @@ export class Cache {
 
     this.cache[key] = result;
     return result;
-  }
+  };
 }
