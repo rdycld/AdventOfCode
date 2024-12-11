@@ -2,8 +2,8 @@ const fs = require("fs");
 
 const input = fs.readFileSync("./input.txt", { encoding: "utf8" });
 
-const data = input.split("\n").map((l) => l.split("").map(Number));
 console.time("part2");
+const data = input.split("\n").map((l) => l.split("").map(Number));
 
 function inBounds(y, x) {
   return 0 <= y && y < data.length && 0 <= x && x < data[0].length;
