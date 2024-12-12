@@ -38,22 +38,15 @@ let diagonalDirs = [
  */
 
 const regions = [];
-const starters = new Set();
-
-for (let y = 0; y < garden.length; ++y) {
-  for (let x = 0; x < garden[0].length; ++x) {
-    let plantKey = `${y}-${x}`;
-    starters.add(plantKey);
-  }
-}
+const seen = new Set();
 
 for (let y = 0; y < garden.length; ++y) {
   for (let x = 0; x < garden[0].length; ++x) {
     let plantKey = `${y}-${x}`;
     let plant = garden[y][x];
 
-    if (!starters.has(plantKey)) continue;
-    starters.delete(plantKey);
+    if (seen.has(plantKey)) continue;
+    seen.add(plantKey);
 
     let region = {
       plants: [],
@@ -64,11 +57,11 @@ for (let y = 0; y < garden.length; ++y) {
     let queue = [[y, x]];
 
     while (queue.length) {
-      let [_y, _x] = queue.pop();
-      let key = `${_y}-${_x}`;
+      let [y, x] = queue.pop();
+      let key = `${y}-${x}`;
       if (region.plants.includes(key)) continue;
 
-      starters.delete(key);
+      seen.add(key);
       region.plants.push(key);
 
       let sameCardinal = {
@@ -86,18 +79,18 @@ for (let y = 0; y < garden.length; ++y) {
       };
 
       for (let [dy, dx] of cardinalDirs) {
-        if (garden[_y + dy]?.[_x + dx] === plant) {
+        if (garden[y + dy]?.[x + dx] === plant) {
           if (dy === 1) sameCardinal.down = 1;
           if (dy === -1) sameCardinal.up = 1;
           if (dx === 1) sameCardinal.right = 1;
           if (dx === -1) sameCardinal.left = 1;
 
-          if (!region.plants.includes(`${_y + dy}-${_x + dx}`))
-            queue.push([_y + dy, _x + dx]);
+          if (!region.plants.includes(`${y + dy}-${x + dx}`))
+            queue.push([y + dy, x + dx]);
         }
       }
       for (let [dy, dx] of diagonalDirs) {
-        if (garden[_y + dy]?.[_x + dx] !== plant) {
+        if (garden[y + dy]?.[x + dx] !== plant) {
           if (dy === -1 && dx === -1) differentDiagonal.upLeft = 1;
           if (dy === 1 && dx === 1) differentDiagonal.downRight = 1;
           if (dy === 1 && dx === -1) differentDiagonal.downLeft = 1;

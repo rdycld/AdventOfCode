@@ -13,22 +13,15 @@ let dirs = [
 ];
 
 const regions = [];
-const starters = new Set();
-
-for (let y = 0; y < garden.length; ++y) {
-  for (let x = 0; x < garden[0].length; ++x) {
-    let plantKey = `${y}-${x}`;
-    starters.add(plantKey);
-  }
-}
+const seen = new Set();
 
 for (let y = 0; y < garden.length; ++y) {
   for (let x = 0; x < garden[0].length; ++x) {
     let plantKey = `${y}-${x}`;
     let plant = garden[y][x];
 
-    if (!starters.has(plantKey)) continue;
-    starters.delete(plantKey);
+    if (seen.has(plantKey)) continue;
+    seen.add(plantKey);
 
     let region = {
       perimeter: 0,
@@ -39,20 +32,21 @@ for (let y = 0; y < garden.length; ++y) {
     let queue = [[y, x]];
 
     while (queue.length) {
-      let [_y, _x] = queue.pop();
-      let key = `${_y}-${_x}`;
+      let [y, x] = queue.pop();
+      let key = `${y}-${x}`;
       if (region.plants.includes(key)) continue;
 
-      starters.delete(key);
+      seen.add(key);
       region.plants.push(key);
 
       let sameAdujstentPlants = 0;
 
       for (let [dy, dx] of dirs) {
-        if (garden[_y + dy]?.[_x + dx] === plant) {
+        let ny = y + dy;
+        let nx = x + dx;
+        if (garden[ny]?.[nx] === plant) {
           sameAdujstentPlants += 1;
-          if (!region.plants.includes(`${_y + dy}-${_x + dx}`))
-            queue.push([_y + dy, _x + dx]);
+          if (!region.plants.includes(`${ny}-${nx}`)) queue.push([ny, nx]);
         }
       }
       region.perimeter += 4 - sameAdujstentPlants;
