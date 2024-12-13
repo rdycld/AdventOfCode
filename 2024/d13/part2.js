@@ -3,35 +3,19 @@ const fs = require("fs");
 console.time("part2");
 const input = fs.readFileSync("./input.txt", { encoding: "utf8" });
 
-const machines = input.split("\n\n").map((machine) => {
-  const [equasionA, equasionB, prize] = machine.split("\n");
-  const [m, n] = equasionA
-    .split(/Button A: X\+|\, Y\+/)
-    .filter(Boolean)
-    .map(Number);
-  const [o, p] = equasionB
-    .split(/Button B: X\+|\, Y\+/)
-    .filter(Boolean)
-    .map(Number);
-  const [C, D] = prize
-    .split(/Prize: X\=|\, Y=/)
-    .filter(Boolean)
-    .map(Number);
+const part2 = input.split("\n\n").reduce((acc, machine) => {
+  const [, m, n, o, p, C, D] = machine.split(/\D+/).map(Number);
+  let nC = C + 10000000000000;
+  let nD = D + 10000000000000;
 
-  return { m, n, o, p, C: C + 10000000000000, D: D + 10000000000000 };
-});
+  let B = (nD * m - n * nC) / (p * m - n * o);
+  let A = (nC - o * B) / m;
 
+  if (A % 1 === 0 && B % 1 === 0) return acc + (3 * A + B);
+  else return acc;
 
-let sum = 0;
-for (let { m, n, o, p, C, D } of machines) {
+},0);
 
-  let B = (D * m - n * C) / (p * m - n * o);
-
-  let A = (C - o * B) / m;
-
-  if (A % 1 === 0 && B % 1 === 0) sum += 3 * A + B;
-}
-
-console.log(sum);
+console.log(part2)
 
 console.timeEnd("part2");
