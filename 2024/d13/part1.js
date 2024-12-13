@@ -1,32 +1,5 @@
 const fs = require("fs");
 
-/**
- *  Button A: X+94, Y+34
- *  Button B: X+22, Y+67
- *  Prize: X=8400, Y=5400
- *
- *  mA + oB = C (m=94, o=22, C = 8400)
- *  nA + pB = D (n=34, p,=67, D = 8400)
- *
- *  mA +oB = C
- *
- *  mA = C - oB
- *
- *  A = (C - oB)/m
- *
- *  n(C - oB)/m + pB = D
- *
- *  nC/m - noB/m + pB = D
- *
- * nC - onB + mpB = Dm
- *
- * mpB - onB = Dm - nC
- *
- * B(mp - on) = Dm - nC
- *
- * B = (Dm - nC)/ (mp - on)
- */
-
 console.time("part1");
 const input = fs.readFileSync("./input.txt", { encoding: "utf8" });
 
