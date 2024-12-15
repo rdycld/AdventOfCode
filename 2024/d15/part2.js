@@ -17,7 +17,8 @@ let [grid, instructions] = [
 
 console.log(grid.map((l) => l.join("")).join("\n"));
 
-let dupa = new Set()
+let seen = new Set();
+
 function lookUp(y, x) {
   let a = grid[y][x];
   let bx = a === "[" ? x + 1 : x - 1;
@@ -25,72 +26,27 @@ function lookUp(y, x) {
   let topA = grid[y - 1][x];
   let topB = grid[y - 1][bx];
 
-  dupa.add(`${y}-${x}`)
-  dupa.add(`${y}-${bx}`)
+  seen.add(`${y}-${x}`);
+  seen.add(`${y}-${bx}`);
 
   if (topA === "#" || topB === "#") return false;
-  if (topA === "." && topB === ".") return true;
-
-  if (topA === ".") return lookUp(y - 1, bx);
-  if (topB === ".") return lookUp(y - 1, x);
-
-  return lookUp(y - 1, bx) && lookUp(y - 1, x);
-}
-
-let seen = new Set();
-
-function replaceUpWith(y, x, replaceWith, init = false) {
-  let val = grid[y][x];
-  let bx = val === "[" ? x + 1 : x - 1;
-  let bVal = grid[y][bx];
-
-  console.log(y,x,replaceWith,init, seen.has(`${y}-${x}`))
-
-  if (val !== "." && init) {
-    replaceUpWith(y, bx, bVal);
+  if (topA === "." && topB === ".") {
+    seen.add(`${y - 1}-${x}`);
+    seen.add(`${y - 1}-${bx}`);
+    return true;
   }
 
-  if (seen.has(`${y}-${x}`)) return;
-  seen.add(`${y}-${x}`);
 
-  if (val !== ".") replaceUpWith(y - 1, x, val, true);
+  if (topA === ".") {
+    seen.add(`${y - 1}-${x}`);
+    return lookUp(y - 1, bx);
+  }
+  if (topB === ".") {
+    seen.add(`${y - 1}-${bx}`);
+    return lookUp(y - 1, x);
+  }
 
-  grid[y][x]= replaceWith 
-
-}
-
-function lookDown(y, x) {
-  let a = grid[y][x];
-  let bx = a === "[" ? x + 1 : x - 1;
-
-  let topA = grid[y + 1][x];
-  let topB = grid[y + 1][bx];
-
-  if (topA === "#" || topB === "#") return false;
-  if (topA === "." && topB === ".") return true;
-
-  if (topA === ".") return lookDown(y + 1, bx);
-  if (topB === ".") return lookDown(y + 1, x);
-
-  return lookDown(y + 1, bx) && lookDown(y + 1, x);
-}
-
-function replaceDownWith(y, x, z = ".", end = false) {
-  if (end) return;
-
-  let a = grid[y][x];
-  let bx = a === "[" ? x + 1 : x - 1;
-  let b = grid[y][bx];
-
-  let topA = grid[y + 1][x];
-  let topB = grid[y + 1][bx];
-
-  replaceDownWith(y + 1, x, topA, topA === ".");
-  replaceDownWith(y + 1, bx, topB, topB === ".");
-  grid[y + 1][x] = a;
-  grid[y + 1][bx] = b;
-  grid[y][x] = z;
-  grid[y][bx] = ".";
+  return lookUp(y - 1, bx) && lookUp(y - 1, x);
 }
 
 let directions = {
@@ -100,10 +56,41 @@ let directions = {
   v: [1, 0],
 };
 
+function lookDown(y, x) {
+  let a = grid[y][x];
+  let bx = a === "[" ? x + 1 : x - 1;
+
+  let topA = grid[y + 1][x];
+  let topB = grid[y + 1][bx];
+
+  seen.add(`${y}-${x}`);
+  seen.add(`${y}-${bx}`);
+
+  if (topA === "#" || topB === "#") return false;
+  if (topA === "." && topB === ".") {
+    seen.add(`${y + 1}-${x}`);
+    seen.add(`${y + 1}-${bx}`);
+    return true;
+  }
+
+  if (topA === ".") {
+    seen.add(`${y + 1}-${x}`);
+    return lookDown(y + 1, bx);
+  }
+  if (topB === ".") {
+    seen.add(`${y + 1}-${bx}`);
+    return lookDown(y + 1, x);
+  }
+
+  return lookDown(y + 1, bx) && lookDown(y + 1, x);
+}
+
 let position;
 for (let y = 0; y < grid.length; ++y)
   for (let x = 0; x < grid[0].length; ++x)
     if (grid[y][x] === "@") position = [y, x];
+
+let screens = [];
 
 for (let i = 0; i < instructions.length; ++i) {
   let [y, x] = position;
@@ -150,40 +137,88 @@ for (let i = 0; i < instructions.length; ++i) {
     }
 
     if (instruction === "^") {
-      if (lookUp(y, x)) {
-        console.log(dupa)
-        replaceUpWith(ny, nx, "@", true);
-        grid[y][x] = ".";
-        console.log(...seen.values());
-        seen = new Set();
+      if (lookUp(y - 1, x)) {
+        const points = {};
+
+        for (let dup of seen.values()) {
+          let [y, x] = dup.split("-");
+          if (points[x]) {
+            points[+x].push([+y, +x]);
+          } else {
+            points[+x] = [[+y, +x]];
+          }
+        }
+
+        for (let v of Object.values(points)) {
+          let sorted = v.toSorted((a, b) => a[0] - b[0]);
+
+          for (let i = 0; i < sorted.length - 1; ++i) {
+            let [y, x] = sorted[i];
+            grid[y][x] = grid[y + 1][x];
+          }
+
+          let [ly, lx] = sorted[sorted.length - 1];
+          grid[ly][lx] = ".";
+        }
+        grid[ny][nx] = "@";
         position = [ny, nx];
+        grid[y][x] = ".";
       }
+      seen = new Set();
 
       break mainLookAhead;
     }
 
     if (instruction === "v") {
-      if (lookDown(y, x)) {
-        replaceDownWith(ny, nx);
+      if (lookDown(y + 1, x)) {
+        const points = {};
+
+        for (let dup of seen.values()) {
+          let [y, x] = dup.split("-");
+          if (points[x]) {
+            points[+x].push([+y, +x]);
+          } else {
+            points[+x] = [[+y, +x]];
+          }
+        }
+
+        for (let v of Object.values(points)) {
+          let sorted = v.toSorted((a, b) => b[0] - a[0]);
+
+          for (let i = 0; i < sorted.length - 1; ++i) {
+            let [y, x] = sorted[i];
+            grid[y][x] = grid[y - 1][x];
+          }
+
+          let [ly, lx] = sorted[sorted.length - 1];
+          grid[ly][lx] = ".";
+        }
+        seen = new Set();
         grid[ny][nx] = "@";
         grid[y][x] = ".";
         position = [ny, nx];
       }
+      seen.clear();
 
       break mainLookAhead;
     }
   }
 
-  console.log(instruction);
-  console.log(grid.map((l) => l.join("")).join("\n"));
-  console.log("\n");
+  screens.push(grid.map((l) => l.join("")).join("\n"));
 }
 
 let sum = 0;
 
+for (let i = 0; i < screens.length; ++i) {
+  setTimeout(() => {
+    console.clear();
+    console.log(screens[i]);
+  }, i * 100);
+}
+
 for (let y = 0; y < grid.length; ++y)
   for (let x = 0; x < grid[0].length; ++x)
-    if (grid[y][x] === "O") sum += 100 * y + x;
+    if (grid[y][x] === "[") sum += 100 * y + x;
 
 console.log(sum);
 console.timeEnd("part1");

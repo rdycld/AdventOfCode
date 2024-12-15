@@ -62,10 +62,6 @@ for (let i = 0; i < instructions.length; ++i) {
       break mainLookAhead;
     }
   }
-
-  // console.log(instruction)
-  // console.log(grid.map(l => l.join('')).join('\n'))
-  // console.log('\n')
 }
 
 
