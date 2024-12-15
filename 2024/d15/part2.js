@@ -7,11 +7,11 @@ let grid = input[0]
   .replace("@", "@.")
   .split("\n")
   .map((l) => l.split(""));
-let instructions = input[1].split("\n").join("");
 let y;
 let x;
 let seen = new Set();
 
+// Find initial @ position
 for (let _y = 0; _y < grid.length; _y++)
   for (let _x = 0; _x < grid[0].length; _x++)
     if (grid[_y][_x] === "@") {
@@ -19,13 +19,14 @@ for (let _y = 0; _y < grid.length; _y++)
       x = _x;
     }
 
+// LookAhead function used multiple times, so it stays
 function lookAhead(Y, X, dir) {
   let halfA = grid[Y][X];
   let halfBX = X + (halfA === "]" ? -1 : 1);
   seen.add(Y + "-" + X);
   seen.add(Y + "-" + halfBX);
-  let upA = grid[Y + dir][X];
-  let upB = grid[Y + dir][halfBX];
+  let upA = grid[Y + dir][X],
+    upB = grid[Y + dir][halfBX];
   if (upA === "." && upB === ".") {
     seen.add(Y + dir + "-" + X);
     seen.add(Y + dir + "-" + halfBX);
@@ -43,7 +44,8 @@ function lookAhead(Y, X, dir) {
   return lookAhead(Y + dir, X, dir) && lookAhead(Y + dir, halfBX, dir);
 }
 
-for (let i of instructions) {
+// Inline instructions directly in the loop
+for (let i of input[1].split("\n").join("")) {
   let dy = i === "^" ? -1 : i === "v" ? 1 : 0;
   let dx = i === ">" ? 1 : i === "<" ? -1 : 0;
   let ny = y + dy;
@@ -77,13 +79,12 @@ for (let i of instructions) {
   }
 
   if ((i === "^" || i === "v") && lookAhead(ny, nx, dy)) {
-    for (let p of Array.from(seen).sort((a, b) => {
-      let yA = +a.split("-")[0];
-      let yB = +b.split("-")[0];
-      return dy * (yB - yA);
-    })) {
-      let Y = +p.split("-")[0];
-      let X = +p.split("-")[1];
+    for (let p of Array.from(seen).sort(
+      (a, b) => dy * (+b.split("-")[0] - +a.split("-")[0]),
+    )) {
+      let aP = p.split("-"),
+        Y = +aP[0],
+        X = +aP[1];
       grid[Y][X] = seen.has(Y - dy + "-" + X) ? grid[Y - dy][X] : ".";
     }
     grid[ny][nx] = "@";
