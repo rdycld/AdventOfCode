@@ -10,16 +10,12 @@ let grid = input[0]
 let y;
 let x;
 let seen = new Set();
-
-// Find initial @ position
 for (let _y = 0; _y < grid.length; _y++)
   for (let _x = 0; _x < grid[0].length; _x++)
     if (grid[_y][_x] === "@") {
       y = _y;
       x = _x;
     }
-
-// LookAhead function used multiple times, so it stays
 function lookAhead(Y, X, dir) {
   let halfA = grid[Y][X];
   let halfBX = X + (halfA === "]" ? -1 : 1);
@@ -43,14 +39,11 @@ function lookAhead(Y, X, dir) {
   }
   return lookAhead(Y + dir, X, dir) && lookAhead(Y + dir, halfBX, dir);
 }
-
-// Inline instructions directly in the loop
 for (let i of input[1].split("\n").join("")) {
   let dy = i === "^" ? -1 : i === "v" ? 1 : 0;
   let dx = i === ">" ? 1 : i === "<" ? -1 : 0;
   let ny = y + dy;
   let nx = x + dx;
-
   if (grid[ny][nx] === ".") {
     grid[y][x] = ".";
     grid[ny][nx] = "@";
@@ -59,7 +52,6 @@ for (let i of input[1].split("\n").join("")) {
     continue;
   }
   if (grid[ny][nx] === "#") continue;
-
   if (i === "<" || i === ">") {
     let fy = ny;
     let fx = nx;
@@ -77,7 +69,6 @@ for (let i of input[1].split("\n").join("")) {
       break;
     }
   }
-
   if ((i === "^" || i === "v") && lookAhead(ny, nx, dy)) {
     for (let p of Array.from(seen).sort(
       (a, b) => dy * (+b.split("-")[0] - +a.split("-")[0]),
@@ -94,11 +85,9 @@ for (let i of input[1].split("\n").join("")) {
   }
   seen.clear();
 }
-
 let sum = 0;
 for (let Y = 0; Y < grid.length; Y++)
   for (let X = 0; X < grid[0].length; X++)
     if (grid[Y][X] === "[") sum += 100 * Y + X;
-
 console.log(sum);
 console.timeEnd("part2");
