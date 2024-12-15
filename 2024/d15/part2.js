@@ -85,9 +85,11 @@ for (let i of input[1].split("\n").join("")) {
   }
   seen.clear();
 }
-let sum = 0;
-for (let Y = 0; Y < grid.length; Y++)
-  for (let X = 0; X < grid[0].length; X++)
-    if (grid[Y][X] === "[") sum += 100 * Y + X;
-console.log(sum);
+console.log(
+  grid.reduce(
+    (a, r, Y) =>
+      a + r.reduce((b, c, X) => b + (c === "[" ? 100 * Y + X : 0), 0),
+    0,
+  ),
+);
 console.timeEnd("part2");
