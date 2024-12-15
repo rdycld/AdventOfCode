@@ -132,11 +132,9 @@ for (let i of instructions) {
   seen.clear();
 }
 
-let sum = 0;
-
-for (let y = 0; y < grid.length; ++y)
-  for (let x = 0; x < grid[0].length; ++x)
-    if (grid[y][x] === "[") sum += 100 * y + x;
+let sum = grid
+  .flatMap((x) => x)
+  .reduce((a, v, i) => (v === "[" ? a + i : a), 0);
 
 console.log(sum);
 console.timeEnd("part2");
