@@ -17,6 +17,8 @@ export class PriorityQueue {
     if (maxP === Infinity) return undefined;
 
     let list = this.#queue.get(maxP);
+    if (!list) return undefined;
+    
     let v = list.pop();
 
     if (list.length === 0) this.#queue.delete(maxP);
