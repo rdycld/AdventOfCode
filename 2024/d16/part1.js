@@ -19,7 +19,7 @@ for (let y = 0; y < maze.length; ++y)
     if (maze[y][x] === "S") s = [y, x];
     else if (maze[y][x] === "E") e = [y, x];
 
-let start = [...s, 0, 0, 0, 0];
+let start = [...s, 0, 0, 0];
 
 const seenKey = (y, x, dy, dx) => `${y}-${x}-${dy}-${dx}`;
 const seen = new Set();
@@ -32,7 +32,7 @@ pq.push(start, 0);
 
 while (pq.length) {
   let path = pq.pop();
-  const [y, x, dy, dx, turns, cost] = path;
+  const [y, x, dy, dx, cost] = path;
 
   seen.add(seenKey(y, x, dy, dx));
 
@@ -46,14 +46,14 @@ while (pq.length) {
     if (ndy === -dy && ndx === -dx) continue;
     if (maze[y + ndy][x + ndx] === "#") continue;
     if (ndy === dy && ndx === dx) {
-      let next = [y + dy, x + dx, dy, dx, turns, cost + 1];
-      pq.push(next, 1000 * turns + cost + 1);
+      let next = [y + dy, x + dx, dy, dx, cost + 1];
+      pq.push(next, cost + 1);
       continue;
     }
-    let next = [y + ndy, x + ndx, ndy, ndx, turns + 1, cost + 1];
-    pq.push(next, 1000 + 1000 * turns + cost + 1);
+    let next = [y + ndy, x + ndx, ndy, ndx, cost + 1001];
+    pq.push(next, cost + 1001);
   }
 }
 
-console.log(1000 * answ[4] + answ[5]);
+console.log(answ[4]);
 console.timeEnd("part1");
