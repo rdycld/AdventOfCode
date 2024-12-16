@@ -32,7 +32,7 @@ for (let _y = 0; _y < grid.length; ++_y)
     }
 
 function keyGen(y, x) {
-  return `${y}-${x}`;
+  return grid[0].length * y + x;
 }
 
 let seen = new Set();
@@ -109,19 +109,18 @@ for (let i of instructions) {
   }
 
   if ((i === "^" || i === "v") && lookAhead(ny, nx, dy)) {
-    let points = Array.from(seen).sort((a, b) => {
-      let [yA] = a.split("-").map(Number);
-      let [yB] = b.split("-").map(Number);
+    let copied = {};
 
-      return dy * (yB - yA);
-    });
-
-    for (let point of points) {
-      let [y, x] = point.split("-").map(Number);
+    for (let point of seen) {
+      let x = point % grid[0].length;
+      let y = (point - x) / grid[0].length;
 
       let isNextInSeen = seen.has(keyGen(y - dy, x));
+      copied[y * grid[0].length + x] = grid[y][x];
 
-      grid[y][x] = isNextInSeen ? grid[y - dy][x] : ".";
+      grid[y][x] = isNextInSeen
+        ? copied[(y - dy) * grid[0].length + x] ?? grid[y - dy][x]
+        : ".";
     }
 
     grid[ny][nx] = "@";

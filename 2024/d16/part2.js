@@ -30,6 +30,7 @@ const seen = new Set();
 let pq = new PriorityQueue();
 
 let answ = [];
+let min = Infinity;
 
 pq.push(start, 0);
 
@@ -40,8 +41,11 @@ while (pq.length) {
   seen.add(getSeenKey(y, x, dy, dx));
   lSeen.add(getLocalSeenKey(y, x));
 
+  if(turns *1000 + lSeen.size > min)break
+
   if (y === e[0] && x === e[1]) {
     answ.push(tile);
+    min = turns * 1000 + lSeen.size;
   }
 
   for (let [ndy, ndx] of directions) {
@@ -61,28 +65,18 @@ while (pq.length) {
 }
 
 let p2 = answ
-  .sort((a, b) => 1000 * a[4] + a[5] - (1000 * b[4] + b[5]))
-  .map((l) => [1000 * l[4] + l[5].size + -1, l[5]]);
+  .map((l) =>  l[5]);
 
-let lowCost = p2[0][0];
 
 let a = new Set();
 
 for (let i = 0; i < p2.length; ++i) {
-  let [cost, visited] = p2[i];
+  let visited = p2[i];
 
-  if (cost === lowCost) {
     a = a.union(visited);
-  }
 }
 
 console.log(a.size);
 
-// for (let s of a.values()) {
-//   let [y, x] = s.split("-");
-
-//   maze[y][x] = "0";
-// }
-// console.log(maze.map((l) => l.join("")).join("\n"));
 
 console.timeEnd("part2");
