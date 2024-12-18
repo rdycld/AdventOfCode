@@ -1,34 +1,60 @@
 console.time("part1");
 
+// const program = [0, 1, 5, 4, 3, 0];
+
+// let registerA = 729;
 let registerA = 30899381;
 let registerB = 0;
 let registerC = 0;
 const program = [2, 4, 1, 1, 7, 5, 4, 0, 0, 3, 1, 6, 5, 5, 3, 0];
 
-let foo = {
-  0: (denominator)=>{
-    
+const getCombo = (operand) => {
+  if (operand < 4) return operand;
+  if (operand === 4) return registerA;
+  if (operand === 5) return registerB;
+  if (operand === 6) return registerC;
 
-  }
-} 
-// The numerator is the value in the A register. The denominator is found by raising 2 to the power of the instruction's combo operand. (So, an operand of 2 would divide A by 4 (2^2); an operand of 5 would divide A by 2^B.) The result of the division operation is truncated to an integer and then written to the A register.
+  throw "dupa";
+};
 
-// The bxl instruction (opcode 1) calculates the bitwise XOR of register B and the instruction's literal operand, then stores the result in register B.
+let buff = "";
 
-// The bst instruction (opcode 2) calculates the value of its combo operand modulo 8 (thereby keeping only its lowest 3 bits), then writes that value to the B register.
+let iP = 0;
+const foo = {
+  0: (op) => {
+    registerA = Math.trunc(registerA / 2 ** getCombo(op));
+  },
+  1: (op) => {
+    registerB ^= op;
+  },
+  2: (op) => {
+    registerB = getCombo(op) % 8;
+  },
+  3: (op) => {
+    if (registerA) {
+      iP = op - 2;
+    }
+  },
+  4: () => {
+    registerB ^= registerC;
+  },
+  5: (op) => {
+    buff += getCombo(op) % 8 
+    buff += ',' 
+  },
+  6: (op) => {
+    registerB = Math.trunc(registerA / 2 ** getCombo(op));
+  },
+  7: (op) => {
+    registerC = Math.trunc(registerA / 2 ** getCombo(op));
+  },
+};
 
-// The jnz instruction (opcode 3) does nothing if the A register is 0. However, if the A register is not zero, it jumps by setting the instruction pointer to the value of its literal operand; if this instruction jumps, the instruction pointer is not increased by 2 after this instruction.
+for (; iP < program.length - 1; iP += 2) {
+  let func = program[iP];
+  foo[func](program[iP + 1]);
+}
 
-// The bxc instruction (opcode 4) calculates the bitwise XOR of register B and register C, then stores the result in register B. (For legacy reasons, this instruction reads an operand but ignores it.)
-
-// The out instruction (opcode 5) calculates the value of its combo operand modulo 8, then outputs that value. (If a program outputs multiple values, they are separated by commas.)
-
-// The bdv instruction (opcode 6) works exactly like the adv instruction except that the result is stored in the B register. (The numerator is still read from the A register.)
-
-// The cdv instruction (opcode 7) works exactly like the adv instruction except that the result is stored in the C register. (The numerator is still read from the A register.)
-
-
-
-
+console.log(buff)
 
 console.timeEnd("part1");
