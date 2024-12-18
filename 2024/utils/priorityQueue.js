@@ -1,7 +1,7 @@
 export class PriorityQueue {
   #queue = new Map();
 
-  push(v, p) {
+  add(v, p) {
     let list = this.#queue.get(p);
 
     if (list) {

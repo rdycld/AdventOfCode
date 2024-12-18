@@ -32,7 +32,7 @@ let pq = new PriorityQueue();
 let answ = [];
 let min = Infinity;
 
-pq.push(start, 0);
+pq.add(start, 0);
 
 while (pq.length) {
   let tile = pq.pop();
@@ -54,12 +54,12 @@ while (pq.length) {
     if (maze[y + ndy][x + ndx] === "#") continue;
     if (ndy === dy && ndx === dx) {
       let next = [y + dy, x + dx, dy, dx, turns, new Set(lSeen)];
-      pq.push(next, 1000 * turns + lSeen.size + 1);
+      pq.add(next, 1000 * turns + lSeen.size + 1);
       continue;
     }
 
     let next = [y + ndy, x + ndx, ndy, ndx, turns + 1, new Set(lSeen)];
-    pq.push(next, 1000 * turns + 1000 + lSeen.size);
+    pq.add(next, 1000 * turns + 1000 + lSeen.size);
     continue;
   }
 }

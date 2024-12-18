@@ -35,7 +35,6 @@ for (let i = 0; i < corruptedCount; ++i) {
   
   maze[y][x] = "#";
 }
-console.log(maze.map((l) => l.join("")).join("\n"));
 
 const directions = [
   [-1, 0],
