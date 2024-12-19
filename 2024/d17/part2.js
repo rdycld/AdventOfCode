@@ -1,7 +1,7 @@
 console.time("part2");
 //                           [4]/5/6
 //                           V  /4: [5],[6] | /5: 2,5,6 | 6:3,6
-//                           V V .         2/7
+//                           V V              V-2/7
 // const digits = [ 7,0,2,6,4,2,5,2,3,6,5,1,4,2,7,2].reverse();
 // found it manually :>
 
@@ -69,19 +69,16 @@ function run() {
 
 let digits = [];
 let desiredOutput = program.join("");
-let backtrack = false;
 
 main: while (true) {
-  if (!backtrack) digits.push(-1);
-  backtrack = false;
+  digits.push(-1);
 
   while (true) {
     digits[digits.length - 1] += 1;
 
     if (digits[digits.length - 1] === 8) {
       digits.pop();
-      backtrack = true;
-      break;
+      continue;
     }
 
     registerA = octArrToDec(digits);
@@ -89,6 +86,7 @@ main: while (true) {
     let output = run();
 
     if (desiredOutput === output) {
+      console.log(digits);
       console.log("found: ", octArrToDec(digits));
       break main;
     }
