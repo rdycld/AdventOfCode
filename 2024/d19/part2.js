@@ -10,32 +10,23 @@ let cache = {};
 function calcPossibilities(part, pattern) {
   if (part === pattern) return 1;
 
-  if (cache[part]) return cache[part];
+  if (part in cache) return cache[part];
 
-  let next = [];
-
-  for (let towel of towels) {
-    let n = part + towel;
-    if (pattern.startsWith(n)) {
-      next.push(n);
-    }
-  }
-
-  let result = next.reduce(
-    (sum, val) => sum + calcPossibilities(val, pattern),
+  cache[part] = towels.reduce(
+    (sum, towel) =>
+      pattern.startsWith(part + towel)
+        ? sum + calcPossibilities(part + towel, pattern)
+        : sum,
     0
   );
-  cache[part] = result;
 
-  return result;
+  return cache[part];
 }
 
 let sum = 0;
 
 for (let pattern of patterns) {
-  let combinations = calcPossibilities("", pattern);
-  sum += combinations;
-
+  sum += calcPossibilities("", pattern);
   cache = {};
 }
 
