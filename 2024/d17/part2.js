@@ -51,10 +51,10 @@ const functions = {
     buffer += getCombo(op) % 8n;
   },
   6: (op) => {
-    registerB = registerA / 2n ** BigInt(getCombo(op));
+    registerB = registerA / 2n ** getCombo(op);
   },
   7: (op) => {
-    registerC = registerA / BigInt(2n ** getCombo(op));
+    registerC = registerA / 2n ** getCombo(op);
   },
 };
 
@@ -89,7 +89,7 @@ main: while (true) {
     let output = run();
 
     if (desiredOutput === output) {
-      console.log('found: ',octArrToDec(digits));
+      console.log("found: ", octArrToDec(digits));
       break main;
     }
 
