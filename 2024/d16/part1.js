@@ -28,7 +28,7 @@ let pq = new PriorityQueue();
 
 let answ;
 
-pq.push(start, 0);
+pq.add(start, 0);
 
 while (pq.length) {
   let path = pq.pop();
@@ -47,11 +47,11 @@ while (pq.length) {
     if (maze[y + ndy][x + ndx] === "#") continue;
     if (ndy === dy && ndx === dx) {
       let next = [y + dy, x + dx, dy, dx, cost + 1];
-      pq.push(next, cost + 1);
+      pq.add(next, cost + 1);
       continue;
     }
     let next = [y + ndy, x + ndx, ndy, ndx, cost + 1001];
-    pq.push(next, cost + 1001);
+    pq.add(next, cost + 1001);
   }
 }
 
