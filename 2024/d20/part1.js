@@ -45,7 +45,7 @@ while (q.length) {
   }
 }
 
-let shortcuts = {};
+let shortcuts = 0;
 
 for (let i = 0; i < fullPath.length; ++i) {
   for (let j = i + 1; j < fullPath.length; ++j) {
@@ -55,12 +55,14 @@ for (let i = 0; i < fullPath.length; ++i) {
     const dy = Math.abs(ay - by);
     const dx = Math.abs(ax - bx);
 
-    if (((dy === 0 && dx === 2) || (dy === 2 && dx === 0)) && j - i > 2) {
-      shortcuts[`${ay},${ax}-${by},${bx}`] = j - i - 2;
+    if (
+      ((dy === 0 && dx === 2) || (dy === 2 && dx === 0)) &&
+      j - i - (dy + dx) >= 100
+    ) {
+      shortcuts += 1;
     }
   }
 }
-console.log(Object.values(shortcuts).filter(v => v >=64).length);
-// console.log(shortcuts)
+console.log(shortcuts);
 
 console.timeEnd("part1");

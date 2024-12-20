@@ -57,7 +57,7 @@ for (let i = 0; i < fullPath.length; ++i) {
     const di = j - i;
 
     if (dy + dx > 20) continue;
-    if (dy + dx > di) continue;
+    if (dy + dx >= di) continue;
 
     if (di - (dy + dx) >= 100) shortcuts += 1;
   }
