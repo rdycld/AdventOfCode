@@ -22,7 +22,7 @@ let q = [];
 q.push(s);
 
 let seen = new Set();
-const seenKey = (y, x) => `${y}-${x}`;
+const seenKey = (y, x) => 1000 * y + x;
 let fullPath;
 
 while (q.length) {
@@ -62,5 +62,5 @@ for (let i = 0; i < fullPath.length; ++i) {
     if (di - (dy + dx) >= 100) shortcuts += 1;
   }
 }
-console.log(shortcuts)
+console.log(shortcuts);
 console.timeEnd("part2");
