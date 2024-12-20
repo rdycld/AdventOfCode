@@ -14,7 +14,7 @@ let s;
 let e;
 for (let y = 0; y < racetrack.length; ++y)
   for (let x = 0; x < racetrack[0].length; ++x)
-    if (racetrack[y][x] === "S") s = [y, x, [[y,x]]];
+    if (racetrack[y][x] === "S") s = [y, x, [[y, x]]];
     else if (racetrack[y][x] === "E") e = [y, x];
 
 let q = [];
@@ -45,7 +45,7 @@ while (q.length) {
   }
 }
 
-let shortcuts = {};
+let shortcuts = 0;
 
 for (let i = 0; i < fullPath.length; ++i) {
   for (let j = i + 1; j < fullPath.length; ++j) {
@@ -59,8 +59,8 @@ for (let i = 0; i < fullPath.length; ++i) {
     if (dy + dx > 20) continue;
     if (dy + dx > di) continue;
 
-    shortcuts[`${ay},${ax}-${by},${bx}`] = di - (dy + dx);
+    if (di - (dy + dx) >= 100) shortcuts += 1;
   }
 }
-console.log(">=100", Object.values(shortcuts).filter((v) => v >= 100).length);
+console.log(shortcuts)
 console.timeEnd("part2");
