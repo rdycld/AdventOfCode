@@ -1,13 +1,12 @@
 const fs = require("fs");
 
-console.time("part2");
+console.time("part1");
 const input = fs.readFileSync("./input.txt", { encoding: "utf8" });
-const example = fs.readFileSync("./example.txt", { encoding: "utf8" });
 
 const numpadMoves = {
   "A-0": "<A",
   "0-2": "^A",
-  "2-9": ">^^A",
+  "2-9": "^^>A",
   "9-A": "vvvA",
 
   "A-9": "^^^A",
@@ -31,7 +30,7 @@ const numpadMoves = {
 
   "A-5": "<^^A",
   "5-4": "<A",
-  "4-0": ">>vvA",
+  "4-0": ">vvA",
 
   "5-8": "^A",
   "8-2": "vvA",
@@ -118,19 +117,7 @@ console.log('input: ')
 console.log(firstLayer.map(([path, v]) => v * getSequenceLen(path, 2)).reduce((a,b)=> a+b));
 
 
-let firstLayerExample = example.split("\n").map((el) => {
-  let dirPos = "A";
-  let k = "";
 
-  for (let i = 0; i < el.length; ++i) {
-    let nextDirPos = el[i];
-    let dirMove = numpadMoves[`${dirPos}-${nextDirPos}`];
-    k += dirMove;
-    dirPos = nextDirPos;
-  }
-  return [k, parseInt(el)];
-});
 
-console.log('example: ')
-console.log(firstLayerExample.map(([path, v]) => v * getSequenceLen(path, 2)).reduce((a,b)=> a+b));
 
+console.timeEnd("part1");
