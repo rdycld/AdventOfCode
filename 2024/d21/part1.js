@@ -2,126 +2,135 @@ const fs = require("fs");
 
 console.time("part2");
 const input = fs.readFileSync("./input.txt", { encoding: "utf8" });
-
-/**
- *
- * +---+---+---+
- * | 7 | 8 | 9 |
- * +---+---+---+
- * | 4 | 5 | 6 |
- * +---+---+---+
- * | 1 | 2 | 3 |
- * +---+---+---+
- *     | 0 | A |
- *     +---+---+
- *
- *
- *     +---+---+
- *     | ^ | A |
- * +---+---+---+
- * | < | v | > |
- * +---+---+---+
- * 029A; 
- */
-
-/*
-540A
-582A
-169A
-593A
-579A
-
-*/
-
+const example = fs.readFileSync("./example.txt", { encoding: "utf8" });
 
 const numpadMoves = {
-  'A-0':'<',
-  '0-2':'^',
-  '2-9':'>^^',
-  '9-A':'vvv'
+  "A-0": "<A",
+  "0-2": "^A",
+  "2-9": ">^^A",
+  "9-A": "vvvA",
 
-  // 'A-5':'uul',
-  // '5-4':'l',
-  // '4-0':'rdd',
-  // '0-A':'r'
-}
+  "A-9": "^^^A",
+  "9-8": "<A",
+  "8-0": "vvvA",
+  "0-A": ">A",
+
+  "A-1": "^<<A",
+  "1-7": "^^A",
+  "7-9": ">>A",
+
+  "A-4": "^^<<A",
+  "4-5": ">A",
+  "5-6": ">A",
+  "6-A": "vvA",
+
+  "A-3": "^A",
+  "3-7": "<<^^A",
+
+  //INPUT
+
+  "A-5": "<^^A",
+  "5-4": "<A",
+  "4-0": ">>vvA",
+
+  "5-8": "^A",
+  "8-2": "vvA",
+  "2-A": "v>A", // >v even higher
+
+  "1-6": ">>^A", // ^>> no change
+  "6-9": "^A",
+
+  "5-9": ">^A", // ^> no change
+  "9-3": "vvA",
+  "3-A": "vA",
+
+  "5-7": "<^A", // ^< to high
+};
 
 const directionMoves = {
-  'A-^':'<',
-  'A-<':'v<<',
-  'A-v':'<v',
-  'A->':'v',
-  'A-A':'',
-  '^-^':'',
-  '^-<':'v<',
-  '^-v':'v',
-  '^->':'v>',
-  '^-A':'>',
-  '<-^':'>^',
-  '<-<':'',
-  '<-v':'>',
-  '<->':'>>',
-  '<-A':'>>^',
-  '>-^':'<^',
-  '>-<':'<<',
-  '>-v':'<',
-  '>->':'',
-  '>-A':'^',
-  'v-^':'^',
-  'v-<':'<',
-  'v-v':'',
-  'v->':'>',
-  'v-A':'>^',
+  "A-^": "<A",
+  "A-<": "v<<A",
+  "A-v": "<vA",
+  "A->": "vA",
+  "A-A": "A",
+  "^-^": "A",
+  "^-<": "v<A",
+  "^-v": "vA",
+  "^->": "v>A",
+  "^-A": ">A",
+  "<-^": ">^A",
+  "<-<": "A",
+  "<-v": ">A",
+  "<->": ">>A",
+  "<-A": ">>^A",
+  ">-^": "<^A",
+  ">-<": "<<A",
+  ">-v": "<A",
+  ">->": "A",
+  ">-A": "^A",
+  "v-^": "^A",
+  "v-<": "<A",
+  "v-v": "A",
+  "v->": ">A",
+  "v-A": ">^A",
+};
+
+let cache = {};
+const key = (p, d) => `${p}-${d}`;
+
+function getSequenceLen(path, depth) {
+  let k = key(path, depth);
+  if (k in cache) return cache[k];
+
+  cache[k] = path.length;
+  if (depth === 0) return path.length;
+
+  let sum = 0;
+
+  let dirPos = "A";
+
+  for (let i = 0; i < path.length; ++i) {
+    let nextDirPos = path[i];
+    let dirMove = directionMoves[`${dirPos}-${nextDirPos}`];
+    sum += getSequenceLen(dirMove, depth - 1);
+    dirPos = nextDirPos;
+  }
+
+  cache[k] = sum;
+
+  return sum;
 }
 
+let firstLayer = input.split("\n").map((el) => {
+  let dirPos = "A";
+  let k = "";
 
-let key = '029A';
-let newKey='';
+  for (let i = 0; i < el.length; ++i) {
+    let nextDirPos = el[i];
+    let dirMove = numpadMoves[`${dirPos}-${nextDirPos}`];
+    k += dirMove;
+    dirPos = nextDirPos;
+  }
+  return [k, parseInt(el)];
+});
 
-let numPos='A';
-let dirPos='A';
-
-for(let i = 0; i < key.length;++i){
-  let nextNumPos = key[i]
-  let numMove = numpadMoves[`${numPos}-${nextNumPos}`];
-  newKey+= numMove +'A'
-
-  numPos = nextNumPos;
-}
-key=''
-console.log(newKey)
-
-for(let i = 0; i < newKey.length; ++i){
-  let nextDirPos = newKey[i]
-  let dirMove = directionMoves[`${dirPos}-${nextDirPos}`];
-  key+= dirMove +'A'
-
-  dirPos = nextDirPos;
-}
-console.log(key)
-newKey='';
-dirPos='A';
-
-for(let i = 0; i < key.length; ++i){
-  let nextDirPos = key[i]
-  let dirMove = directionMoves[`${dirPos}-${nextDirPos}`];
-  newKey+= dirMove +'A'
-
-  dirPos = nextDirPos;
-}
-
-key=''
-console.log(newKey)
+console.log('input: ')
+console.log(firstLayer.map(([path, v]) => v * getSequenceLen(path, 2)).reduce((a,b)=> a+b));
 
 
+let firstLayerExample = example.split("\n").map((el) => {
+  let dirPos = "A";
+  let k = "";
 
+  for (let i = 0; i < el.length; ++i) {
+    let nextDirPos = el[i];
+    let dirMove = numpadMoves[`${dirPos}-${nextDirPos}`];
+    k += dirMove;
+    dirPos = nextDirPos;
+  }
+  return [k, parseInt(el)];
+});
 
+console.log('example: ')
+console.log(firstLayerExample.map(([path, v]) => v * getSequenceLen(path, 2)).reduce((a,b)=> a+b));
 
-
-
-
-
-
-
-
-console.timeEnd("part2");
