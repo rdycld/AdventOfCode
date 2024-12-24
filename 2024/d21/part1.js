@@ -4,46 +4,25 @@ console.time("part1");
 const input = fs.readFileSync("./input.txt", { encoding: "utf8" });
 
 const numpadMoves = {
-  "A-0": "<A",
-  "0-2": "^A",
-  "2-9": "^^>A",
   "9-A": "vvvA",
-
-  "A-9": "^^^A",
-  "9-8": "<A",
-  "8-0": "vvvA",
   "0-A": ">A",
 
   "A-1": "^<<A",
-  "1-7": "^^A",
   "7-9": ">>A",
-
-  "A-4": "^^<<A",
-  "4-5": ">A",
-  "5-6": ">A",
-  "6-A": "vvA",
-
-  "A-3": "^A",
-  "3-7": "<<^^A",
-
-  //INPUT
-
   "A-5": "<^^A",
   "5-4": "<A",
   "4-0": ">vvA",
 
   "5-8": "^A",
   "8-2": "vvA",
-  "2-A": "v>A", // >v even higher
+  "2-A": "v>A",
 
-  "1-6": ">>^A", // ^>> no change
+  "1-6": "^>>A",
   "6-9": "^A",
-
-  "5-9": ">^A", // ^> no change
+  "5-9": "^>A",
   "9-3": "vvA",
   "3-A": "vA",
-
-  "5-7": "<^A", // ^< to high
+  "5-7": "<^A",
 };
 
 const directionMoves = {
@@ -54,7 +33,7 @@ const directionMoves = {
   "A-A": "A",
   "^-^": "A",
   "^-<": "v<A",
-  "^-v": "vA",
+  // "^-v": "vA",
   "^->": "v>A",
   "^-A": ">A",
   "<-^": ">^A",
@@ -67,11 +46,11 @@ const directionMoves = {
   ">-v": "<A",
   ">->": "A",
   ">-A": "^A",
-  "v-^": "^A",
+  // "v-^": "^A",
   "v-<": "<A",
   "v-v": "A",
   "v->": ">A",
-  "v-A": ">^A",
+  "v-A": "^>A",
 };
 
 let cache = {};
