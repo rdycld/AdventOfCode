@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-console.time('p1');
+console.time('p2');
 const d = fs
   .readFileSync('./input.txt', { encoding: 'utf8' })
   .split('\n')
@@ -26,18 +26,13 @@ for (const distA of d)
 
 const circuts = new Set(d.map((el) => new Set([el.join(',')])));
 
-while (true) {
-  let min = Infinity;
-  let minKey;
-  for (const [key, value] of distances.entries()) {
-    if (value < min) {
-      min = value;
-      minKey = key;
-    }
-  }
+const sortedDistances = [...distances.entries()]
+  .sort((a, b) => b[1] - a[1])
+  .map((el) => el[0])
+  .filter((_, i) => i % 2 === 0);
 
-  distances.delete(minKey);
-  distances.delete(minKey.split('-').toReversed().join('-'));
+while (true) {
+  const minKey = sortedDistances.pop();
 
   const [a, b] = minKey.split('-');
 
@@ -56,5 +51,5 @@ while (true) {
   circuts.add(circutsToJoin.reduce((a, b) => a.union(b), new Set()));
 }
 
-console.timeEnd('p1');
+console.timeEnd('p2');
 
