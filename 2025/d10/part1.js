@@ -18,7 +18,7 @@ for (const machine of data) {
   const config = machine.split(' ');
 
   const [diagram] = config.splice(0, 1);
-  const buttons = config.slice(0,-1)
+  const buttons = config.slice(0, -1);
 
   const diagramValue = getDiagramValue(diagram);
 
@@ -26,11 +26,6 @@ for (const machine of data) {
 
   for (const button of buttons)
     buttonValues.push(getButtonValue(button, diagram.length - 2));
-
-  // since each button is a toggle, using it 2n times is equal to not clicking it at all
-  // which means that in pesimistic scenario each button will have to be clicked once
-  // this means that we can check all possible combinations in timely manner
-  // lets see how part 2 s**ually violates us :>
 
   const scenarios = new Map();
 
@@ -60,3 +55,5 @@ for (const machine of data) {
   }
   globalSum += minFound;
 }
+console.log(globalSum);
+
